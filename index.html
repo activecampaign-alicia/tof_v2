@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ActiveCampaign · GTM Funnel · Jun 22</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#0072EC;--blue-l:#EBF3FF;
+  --green:#00A651;--green-l:#E8F7EF;
+  --amber:#F59E0B;--amber-l:#FEF9EC;
+  --red:#E53E3E;--red-l:#FEF0F0;
+  --bot:#D97706;--bot-l:#FEF3C7;
+  --t1:#0F172A;--t2:#475569;--t3:#94A3B8;
+  --bdr:#E4EAF2;--bg:#EEF2F8;
+  --r:10px;--sh:0 1px 3px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.04);
+}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--t1);-webkit-font-smoothing:antialiased;font-size:13px;line-height:1.4}
+
+/* NAV */
+nav{background:#fff;border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:99;padding:0 28px}
+.nav-i{max-width:1360px;margin:0 auto;height:50px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-box{width:26px;height:26px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.logo-box svg{width:15px;height:15px}
+.logo-t{font-size:13px;font-weight:700;letter-spacing:-.2px}
+.logo-t b{color:var(--blue)}
+.badge{background:var(--blue-l);color:var(--blue);font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px}
+.nav-meta{font-size:11px;color:var(--t3)}
+
+/* PAGE */
+.page{max-width:1360px;margin:0 auto;padding:18px 28px 60px}
+
+/* HERO */
+.hero{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);padding:20px 26px 18px;margin-bottom:12px;box-shadow:var(--sh)}
+.hero-eye{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--blue);margin-bottom:5px}
+.hero-h{font-size:19px;font-weight:800;letter-spacing:-.4px;margin-bottom:3px}
+.hero-h span{color:var(--blue)}
+.hero-sub{font-size:11px;color:var(--t2);max-width:560px;line-height:1.5}
+.chips{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+.chip{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;border:1px solid;white-space:nowrap}
+.c-blue  {background:var(--blue-l);color:var(--blue);border-color:#C7DFFD}
+.c-green {background:var(--green-l);color:#065F46;border-color:#A7F3D0}
+.c-amber {background:var(--amber-l);color:#92400E;border-color:#FDE68A}
+.c-slate {background:#F8FAFC;color:var(--t2);border-color:var(--bdr)}
+.c-purple{background:#F3E8FF;color:#6B21A8;border-color:#D8B4FE}
+
+/* KPI strip */
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--bdr);border-radius:8px;overflow:hidden;background:var(--bdr);gap:1px;margin-top:14px}
+.kpi{background:#fff;padding:11px 15px}
+.kpi-l{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);margin-bottom:3px}
+.kpi-v{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.kpi-s{font-size:10px;font-weight:500;margin-top:1px}
+.up{color:var(--green)}.dn{color:var(--red)}.warn{color:var(--bot)}.mute{color:var(--t3)}
+
+/* SECTION HEADER */
+.sh{display:flex;align-items:center;gap:8px;margin:16px 0 8px}
+.sh-t{font-size:13px;font-weight:700}
+.pill{font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:2px 8px;border-radius:20px}
+.p-blue  {background:var(--blue-l);color:var(--blue)}
+.p-amber {background:var(--amber-l);color:#92400E}
+.p-green {background:var(--green-l);color:#065F46}
+.p-purple{background:#F3E8FF;color:#6B21A8}
+
+/* ALERT */
+.alert{background:var(--bot-l);border:1px solid #FDE68A;border-radius:var(--r);padding:10px 15px;display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.alert h4{font-size:11px;font-weight:700;color:#78350F;margin-bottom:1px}
+.alert p{font-size:10px;color:#92400E;line-height:1.5}
+
+/* CARD */
+.card{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);box-shadow:var(--sh);padding:14px 16px}
+.card-t{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);margin-bottom:10px}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* FIXED chart wrapper — prevents infinite expansion */
+.cw{position:relative;width:100%;overflow:hidden}
+
+/* SPOTLIGHT — side by side */
+.spotlight{background:linear-gradient(135deg,#EFF6FF,#F0FDF9);border:1px solid #BFDBFE;border-radius:var(--r);padding:16px 20px;margin-bottom:10px;display:grid;grid-template-columns:1fr 200px;gap:20px;align-items:start}
+.sp-eye{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--blue);margin-bottom:3px}
+.sp-hl{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-bottom:3px}
+.sp-sub{font-size:11px;color:var(--t2);line-height:1.5;margin-bottom:10px}
+.sp-nums{display:flex;gap:16px;flex-wrap:wrap}
+.sn-v{font-size:17px;font-weight:800;color:var(--blue);letter-spacing:-.4px}
+.sn-l{font-size:8px;color:var(--t3);font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+
+/* NEW LAUNCH BANNER */
+.launch-banner{background:#F5F3FF;border:1px solid #DDD6FE;border-radius:var(--r);padding:14px 18px;margin-bottom:10px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.lb-eye{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#7C3AED;margin-bottom:3px}
+.lb-hl{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:3px}
+.lb-sub{font-size:11px;color:var(--t2);line-height:1.5}
+.lb-nums{display:flex;gap:16px;margin-top:8px;flex-wrap:wrap}
+.lb-v{font-size:16px;font-weight:800;color:#7C3AED;letter-spacing:-.3px}
+.lb-l{font-size:8px;color:var(--t3);font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+.lb-divider{width:1px;background:#DDD6FE;margin:0 4px}
+
+/* PACING */
+.pac-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.pac-lbl{font-size:11px;font-weight:600;width:82px;flex-shrink:0;color:var(--t2)}
+.pac-track{flex:1;height:6px;background:#F1F5F9;border-radius:3px;overflow:hidden}
+.pac-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.pac-pct{font-size:10px;font-weight:700;width:32px;text-align:right;flex-shrink:0}
+
+/* WoW SOURCE BOXES */
+.wow-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.wb{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);box-shadow:var(--sh);padding:11px 13px;min-width:0}
+.wb-src{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);margin-bottom:3px}
+.wb-val{font-size:17px;font-weight:800;letter-spacing:-.4px;line-height:1}
+.wb-wow{font-size:10px;font-weight:700;margin-top:2px}
+.wb-sw{position:relative;width:100%;height:34px;margin-top:6px;overflow:hidden}
+.wb-sw canvas{position:absolute;top:0;left:0;width:100%!important;height:100%!important}
+.wb-prev{font-size:9px;color:var(--t3);margin-top:4px}
+
+/* COUNTRY BOXES */
+.country-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.cb{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);box-shadow:var(--sh);padding:11px 13px;position:relative;min-width:0;overflow:hidden}
+.cb.bot {border-top:2px solid var(--bot)}
+.cb.good{border-top:2px solid var(--green)}
+.cb.ok  {border-top:2px solid var(--amber)}
+.cb.bad {border-top:2px solid var(--red)}
+.cb-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.cb-name{font-size:11px;font-weight:700}
+.cb-wow{font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px}
+.cb-wow.up{background:var(--green-l);color:#065F46}
+.cb-wow.dn{background:var(--red-l);color:#991B1B}
+.cb-wow.fl{background:#F8FAFC;color:var(--t2)}
+.cb-qct{font-size:19px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
+.cb-inq{font-size:9px;color:var(--t3);font-weight:500;margin-top:1px;margin-bottom:4px}
+.cb-sparks{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:6px 0 4px}
+.cb-sw{position:relative;width:100%;height:28px;overflow:hidden}
+.cb-sw canvas{position:absolute;top:0;left:0;width:100%!important;height:100%!important}
+.cb-spark-lbl{font-size:7px;color:var(--t3);text-align:center;margin-top:1px}
+.cb-bar-bg{height:3px;background:#F1F5F9;border-radius:2px;margin:4px 0 3px}
+.cb-bar-fill{height:3px;border-radius:2px}
+.cb-foot{display:flex;justify-content:space-between;font-size:9px;color:var(--t3)}
+.cb-foot b{color:var(--t2);font-weight:600}
+.bot-tag{position:absolute;top:5px;right:5px;background:var(--bot-l);color:#92400E;font-size:7px;font-weight:700;padding:1px 4px;border-radius:3px;text-transform:uppercase}
+
+/* AVG CALLOUTS */
+.co{border-radius:7px;padding:8px 11px;border:1px solid;margin-bottom:6px}
+.co.pos{background:var(--green-l);border-color:#A7F3D0}
+.co.neg{background:var(--red-l);border-color:#FECACA}
+.co.amb{background:var(--amber-l);border-color:#FDE68A}
+.co.neu{background:#F8FAFC;border-color:var(--bdr)}
+.co-hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1px}
+.co-nm{font-size:11px;font-weight:700}
+.co-mt{font-size:9px;color:var(--t3)}
+.co-bd{font-size:10px;color:var(--t2);line-height:1.4}
+
+/* LOOK-INTO */
+.li-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.li{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);box-shadow:var(--sh);padding:13px 15px}
+.li-ico{font-size:14px;margin-bottom:5px}
+.li-lbl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:2px}
+.li-lbl.soft{color:var(--blue)}.li-lbl.pos{color:var(--green)}
+.li-t{font-size:12px;font-weight:700;margin-bottom:2px}
+.li-b{font-size:10px;color:var(--t2);line-height:1.5}
+
+/* TABS */
+.tabs{display:flex;gap:2px;background:#EAEEF4;padding:3px;border-radius:8px;margin-bottom:10px;width:fit-content}
+.tab-btn{padding:4px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--t2);transition:all .12s}
+.tab-btn.active{background:#fff;color:var(--blue);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+footer{margin-top:36px;padding-top:14px;border-top:1px solid var(--bdr);display:flex;justify-content:space-between;font-size:10px;color:var(--t3)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-i">
+    <div class="logo">
+      <div class="logo-box"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3C7.03 3 3 7.03 3 12s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 10c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08C16.71 15.72 14.5 17 12 17z" fill="white"/></svg></div>
+      <span class="logo-t">Active<b>Campaign</b></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="nav-meta">GTM Growth Analytics</span>
+      <span class="badge">Week of Jun 22, 2026</span>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- 1. HERO — what happened this week at a glance -->
+  <div class="hero">
+    <div class="hero-eye">Weekly Funnel Report</div>
+    <div class="hero-h">Top-of-Funnel · <span>Jun 22</span></div>
+    <div class="hero-sub">Traffic → INQs → QCTs across 12 Tier 1 markets. Paid budget optimization underway. Two new initiatives launched this week.</div>
+    <div class="chips">
+      <div class="chip c-green">🇬🇧 UK QCTs +120% WoW</div>
+      <div class="chip c-purple">🚀 ob-mm28 campaign live</div>
+      <div class="chip c-purple">✦ LLM channel active</div>
+      <div class="chip c-blue">Organic stable</div>
+      <div class="chip c-amber">⚠ Germany anomaly — team to review</div>
+    </div>
+    <div class="kpi-strip">
+      <div class="kpi">
+        <div class="kpi-l">Tier 1 QCTs</div>
+        <div class="kpi-v">1,084</div>
+        <div class="kpi-s up">↑ +29% vs 838 prior week</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-l">Total INQs</div>
+        <div class="kpi-v">1,757</div>
+        <div class="kpi-s up">↑ Intent signal strong</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-l">Paid Spend</div>
+        <div class="kpi-v">$103.7K</div>
+        <div class="kpi-s warn">↓ −15% WoW · budget rework</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-l">New Campaigns (ob-mm28)</div>
+        <div class="kpi-v">13</div>
+        <div class="kpi-s mute">$28.7K · Social · launched Jun 22</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-l">LLM QCTs</div>
+        <div class="kpi-v">23</div>
+        <div class="kpi-s mute">Growing channel · est. Mar 30</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. ALERT — Germany anomaly, framed as team decision -->
+  <div class="alert">
+    <span style="font-size:14px;flex-shrink:0;margin-top:1px">⚠️</span>
+    <div>
+      <h4>Germany · Anomaly Flagged — Team to Decide How to Count</h4>
+      <p>258 QCTs with 12 conversions (4.7% CR) vs 47 QCTs / 40% CR the prior week. Direct Load spike pattern is consistent with invalid traffic. Germany QCTs are <strong>included in all totals above</strong> as reported. The team may choose to exclude for performance narratives — that would bring Tier 1 QCTs to 826 (vs 838 prior week, −1% WoW).</p>
+    </div>
+  </div>
+
+  <!-- 3. NEW INITIATIVES — launched this week -->
+  <div class="launch-banner">
+    <div>
+      <div class="lb-eye">🚀 New This Week · Paid Media</div>
+      <div class="lb-hl">ob-mm28 Campaign Package Launched</div>
+      <div class="lb-sub">13 new Social campaigns went live Jun 22 across LinkedIn, Reddit, and Meta. Coverage spans US, UK, Australia, and Brazil. First-week spend of $28.7K is Social-only — Search investment separate.</div>
+      <div class="lb-nums">
+        <div><div class="lb-v">13</div><div class="lb-l">Campaigns</div></div>
+        <div><div class="lb-v">$28.7K</div><div class="lb-l">Week 1 Spend</div></div>
+        <div><div class="lb-v">4</div><div class="lb-l">Markets</div></div>
+        <div><div class="lb-v">Social</div><div class="lb-l">Channel</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="lb-eye">✦ Growing Channel · LLM Referral</div>
+      <div class="lb-hl">LLM as a QCT Source</div>
+      <div class="lb-sub">LLM referral traffic began generating QCTs in late March and has been growing. 23 QCTs this week (down from a 38 peak in Jun 1). Channel is early-stage but directionally building — worth tracking as AI-driven discovery grows.</div>
+      <div class="lb-nums">
+        <div><div class="lb-v">23</div><div class="lb-l">QCTs Jun 22</div></div>
+        <div><div class="lb-v">38</div><div class="lb-l">Peak (Jun 1)</div></div>
+        <div><div class="lb-v" style="font-size:11px;padding-top:3px">Mar 30</div><div class="lb-l">First tracked</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. JUNE PACING — urgency section, one week left -->
+  <div class="sh"><span class="sh-t">June QCT Pacing</span><span class="pill p-amber">1 Week Remaining</span></div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-t">MTD vs June Target</div>
+      <div id="pacingRows"></div>
+    </div>
+    <div class="card">
+      <div class="card-t">vs 13-Week Average · Context</div>
+      <div id="avgCallouts"></div>
+    </div>
+  </div>
+
+  <!-- 5. UK SPOTLIGHT — biggest market story -->
+  <div class="sh"><span class="sh-t">Market Spotlight</span><span class="pill p-blue">UK Deep Dive</span></div>
+  <div class="spotlight">
+    <div>
+      <div class="sp-eye">🔍 Efficiency Story</div>
+      <div class="sp-hl">🇬🇧 UK — QCTs Doubled While Traffic Fell</div>
+      <div class="sp-sub">QCTs went 93→205 (+120% WoW). INQs 87→200. Web traffic <strong>declined</strong> to 24,813 visits from 33,552 — meaning conversion from traffic to trial sharply improved. Something converted better this week. Looking into which campaigns or segments drove it.</div>
+      <div class="sp-nums">
+        <div><div class="sn-v">205</div><div class="sn-l">QCTs</div></div>
+        <div><div class="sn-v">+120%</div><div class="sn-l">WoW</div></div>
+        <div><div class="sn-v">200</div><div class="sn-l">INQs</div></div>
+        <div><div class="sn-v">81%</div><div class="sn-l">June Pace</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="card-t" style="margin-bottom:6px">UK: Traffic ↓ · QCTs ↑</div>
+      <div class="cw" style="height:110px"><canvas id="ukChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 6. PAID MEDIA SPEND — channel performance -->
+  <div class="sh"><span class="sh-t">Paid Media</span><span class="pill p-blue">13-Week Spend · WoW</span></div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-t">Total Spend — 13 Weeks</div>
+      <div class="cw" style="height:130px"><canvas id="spendChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-t">This Week · $103.7K · By Channel</div>
+      <div class="cw" style="height:130px"><canvas id="channelChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 7. FUNNEL BY CHANNEL — source breakdown -->
+  <div class="sh"><span class="sh-t">Funnel by Channel</span><span class="pill p-blue">WoW · 13-week sparkline</span></div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'sq')">QCTs</button>
+    <button class="tab-btn"        onclick="switchTab(this,'si')">INQs</button>
+  </div>
+  <div id="sq" class="tab-panel active"><div class="wow-grid" id="wowQct"></div></div>
+  <div id="si" class="tab-panel">         <div class="wow-grid" id="wowInq"></div></div>
+
+  <!-- 8. COUNTRY BOXES — all 12 Tier 1 -->
+  <div class="sh"><span class="sh-t">Tier 1 Countries</span><span class="pill p-blue">QCT · INQ · 13w trend · June pace</span></div>
+  <div class="country-grid" id="countryGrid"></div>
+
+  <!-- 9. WHAT TO WATCH -->
+  <div class="sh"><span class="sh-t">What to Watch</span><span class="pill p-blue">Signal · Question · Bright Spot</span></div>
+  <div class="li-grid">
+    <div class="li"><div class="li-ico">🇬🇧</div><div class="li-lbl soft">Look Into</div><div class="li-t">UK efficiency spike</div><div class="li-b">QCTs doubled while traffic fell 26%. Which campaign or segment converted better? Shapes July.</div></div>
+    <div class="li"><div class="li-ico">⚠️</div><div class="li-lbl soft">Look Into</div><div class="li-t">Germany anomaly</div><div class="li-b">4.7% CR on 258 QCTs. Team to align on whether to exclude from performance narrative.</div></div>
+    <div class="li"><div class="li-ico">🇧🇷</div><div class="li-lbl soft">Look Into</div><div class="li-t">Brazil — 7 weeks softening</div><div class="li-b">QCTs and INQs both declining. Campaign, market, or seasonal? Needs a diagnosis before July.</div></div>
+    <div class="li"><div class="li-ico">🚀</div><div class="li-lbl pos">Watch</div><div class="li-t">ob-mm28 — first data next week</div><div class="li-b">13 new Social campaigns launched Jun 22. First QCT attribution data lands in the Jun 29 report.</div></div>
+    <div class="li"><div class="li-ico">✦</div><div class="li-lbl pos">Watch</div><div class="li-t">LLM channel trajectory</div><div class="li-b">Growing from 0 to 38 QCTs/week since March. Down slightly this week — track whether that holds.</div></div>
+    <div class="li"><div class="li-ico">🇦🇺</div><div class="li-lbl soft">Look Into</div><div class="li-t">Australia — furthest from target</div><div class="li-b">46% of June target with one week left. July investment plan needed regardless of close.</div></div>
+  </div>
+
+  <footer>
+    <span>ActiveCampaign · GTM Growth Analytics · Confidential</span>
+    <span>Data through Jun 22, 2026 · Next update: Jun 29</span>
+  </footer>
+</div>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+const W=['Mar 30','Apr 06','Apr 13','Apr 20','Apr 27','May 04','May 11','May 18','May 25','Jun 01','Jun 08','Jun 15','Jun 22'];
+const CD={
+  US:         {qct:[420,430,396,417,439,431,411,355,346,393,397,343,318],inq:[374,375,366,397,399,380,375,332,323,340,355,318,304],avg13:392,last:318,prev:343,wow:-7.3, mtd:1451,target:1946,pace:74.6,isBot:false},
+  Brazil:     {qct:[268,217,212,187,216,207,170,155,153,140,202,169,142],inq:[255,197,201,185,203,192,165,146,143,122,195,162,135],avg13:187.5,last:142,prev:169,wow:-16,  mtd:653, target:1242,pace:52.6,isBot:false},
+  UK:         {qct:[86,89,84,64,139,80,81,73,54,63,89,93,205],           inq:[70,86,77,61,128,72,76,68,47,52,84,87,200],           avg13:92.3,last:205,prev:93,wow:120.4,  mtd:450, target:558, pace:80.6,isBot:false},
+  Germany:    {qct:[58,69,90,61,43,72,75,55,47,61,223,47,258],           inq:[46,56,84,54,35,58,68,53,44,51,211,44,257],           avg13:89.2,last:258,prev:47,wow:449,    mtd:589, target:521, pace:113, isBot:true},
+  Australia:  {qct:[37,48,68,48,71,54,43,41,52,47,50,49,43],             inq:[33,37,61,47,64,49,35,38,46,45,42,45,37],             avg13:50.1,last:43, prev:49,wow:-12.2,  mtd:189, target:408, pace:46.3,isBot:false},
+  Spain:      {qct:[31,66,49,48,36,45,35,33,36,42,37,35,41],             inq:[30,63,44,46,35,41,33,29,36,38,33,36,39],             avg13:41.1,last:41, prev:35,wow:17.1,   mtd:155, target:209, pace:74.2,isBot:false},
+  Canada:     {qct:[40,46,37,45,48,39,39,42,32,45,40,37,29],             inq:[30,40,37,43,43,36,36,40,32,39,40,35,28],             avg13:39.9,last:29, prev:37,wow:-21.6,  mtd:151, target:180, pace:83.9,isBot:false},
+  Italy:      {qct:[51,43,29,42,20,33,23,29,24,27,33,36,23],             inq:[48,39,26,40,20,29,18,27,23,23,28,36,19],             avg13:31.8,last:23, prev:36,wow:-36.1,  mtd:119, target:165, pace:72.1,isBot:false},
+  Switzerland:{qct:[11,14,9,23,13,11,9,11,14,10,15,11,4],                inq:[10,12,8,21,12,9,8,10,11,9,13,9,4],                   avg13:11.9,last:4,  prev:11,wow:-63.6,  mtd:40,  target:50,  pace:80,  isBot:false},
+  Austria:    {qct:[10,10,14,11,6,6,10,11,11,13,7,6,10],                  inq:[10,7,13,11,6,3,9,12,10,9,4,6,10],                    avg13:9.6, last:10, prev:6, wow:66.7,   mtd:36,  target:41,  pace:87.8,isBot:false},
+  Ireland:    {qct:[4,10,5,7,8,5,7,12,6,8,7,3,5],                         inq:[4,11,3,5,8,6,6,11,6,9,6,3,4],                        avg13:6.7, last:5,  prev:3, wow:66.7,   mtd:23,  target:19,  pace:121, isBot:false},
+  NZ:         {qct:[3,9,12,4,12,4,5,8,5,8,4,9,6],                          inq:[3,8,12,4,9,3,5,8,5,7,3,8,6],                         avg13:6.8, last:6,  prev:9, wow:-33.3,  mtd:27,  target:18,  pace:150, isBot:false},
+};
+const SRC_QCT={prev:{Paid:437,Organic:351,Direct:425,LLM:32,Referral:195,Other:84},last:{Paid:361,Organic:328,Direct:843,LLM:23,Referral:181,Other:79}};
+const SRC_INQ={prev:{Paid:403,Organic:326,Direct:398,LLM:30,Referral:177,Other:123},last:{Paid:327,Organic:314,Direct:829,LLM:20,Referral:166,Other:100}};
+const SRC_SERIES={
+  qct:{Paid:[341,598,563,538,609,568,518,470,407,445,558,437,361],Organic:[215,399,412,403,392,387,357,322,296,334,379,351,328],Direct:[199,351,306,329,337,322,305,268,252,278,325,425,843],LLM:[6,6,18,14,10,21,21,31,29,38,35,32,23],Referral:[129,204,185,312,295,198,211,189,167,186,217,195,181],Other:[78,109,129,111,93,88,103,94,73,54,82,84,79]},
+  inq:{Paid:[299,522,497,499,527,489,447,406,349,377,476,403,327],Organic:[194,354,372,385,375,362,335,303,278,306,350,326,314],Direct:[168,309,291,302,307,294,281,247,232,253,298,398,829],LLM:[5,5,17,12,8,13,13,25,24,35,32,30,20],Referral:[118,177,164,295,272,182,194,175,155,172,201,177,166],Other:[92,144,177,152,131,117,138,126,110,88,138,123,100]},
+};
+const SC={Paid:'#3B5BDB',Organic:'#2F9E44',Direct:'#F08C00',LLM:'#7C3AED',Referral:'#1098AD',Other:'#ADB5BD'};
+const UK_WEB={labels:['Jun 01','Jun 08','Jun 15','Jun 22'],Paid:[22894,29412,24865,20433],Direct:[2080,2268,2262,2224],Organic:[836,734,753,724],Other:[1981,1060,981,1356]};
+const UK_QCT=[63,89,93,205];
+// Paid spend 13w
+const SPEND_W=W;
+const SPEND_V=[119954,123391,154470,147485,135613,145229,151710,146309,123029,121737,145727,122565,103683];
+const SPEND_BY_CH={Social:[null,null,null,null,null,null,null,51055,45892,35146,35697,35798,49181],Search:[null,null,null,null,null,null,null,65654,56754,64510,84933,67499,39580],Audio:[null,null,null,null,null,null,null,11133,6063,5851,9041,8441,5850],Video:[null,null,null,null,null,null,null,8007,6371,6404,5305,842,683]};
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+const paceCol=p=>p>=90?'#00A651':p>=70?'#F59E0B':'#E53E3E';
+const wowCls=w=>w>5?'up':w<-5?'dn':'fl';
+const cardCls=d=>d.isBot?'bot':d.pace>=90?'good':d.pace>=70?'ok':'bad';
+const pool={};
+
+function spark(id,data,color,opts={}){
+  const el=document.getElementById(id);if(!el)return;
+  if(pool[id])pool[id].destroy();
+  const clean=data.filter(v=>v!=null&&!isNaN(v));
+  const mx=Math.max(...clean,1);
+  pool[id]=new Chart(el,{
+    type:'line',
+    data:{labels:opts.labels||W,datasets:[
+      {data,borderColor:color,borderWidth:opts.lw||1.8,fill:true,
+       backgroundColor:ctx=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,ctx.chart.height);g.addColorStop(0,color+'20');g.addColorStop(1,color+'00');return g},
+       pointRadius:data.map((_,i)=>i===data.length-1?3:0),
+       pointBackgroundColor:color,tension:0.4,spanGaps:true},
+      ...(opts.avg?[{data:data.map(()=>opts.avg),borderColor:'#CBD5E1',borderDash:[3,3],borderWidth:1,pointRadius:0,fill:false}]:[])
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:400},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y!=null?c.parsed.y:''}`}}},
+      scales:{x:{display:false},y:{display:false,min:0,max:mx*1.3}}}
+  });
+}
+
+// ── WoW SOURCE BOXES ─────────────────────────────────────────────────────────
+function buildWow(gridId,type){
+  const prev=type==='qct'?SRC_QCT.prev:SRC_INQ.prev;
+  const last=type==='qct'?SRC_QCT.last:SRC_INQ.last;
+  const series=SRC_SERIES[type];
+  const el=document.getElementById(gridId);
+  let h='';
+  ['Paid','Organic','Direct','LLM','Referral','Other'].forEach(s=>{
+    const vp=prev[s]||0,vl=last[s]||0;
+    const wow=vp?((vl-vp)/vp*100):0;
+    const bot=s==='Direct'&&wow>50;
+    const llm=s==='LLM';
+    const wclr=wow>5?'#00A651':wow<-5?'#E53E3E':'#94A3B8';
+    const valCol=bot?'#D97706':llm?'#7C3AED':'var(--t1)';
+    const cid=`wb-${gridId}-${s}`;
+    const note=bot?' ⚠':llm?' ✦':'';
+    h+=`<div class="wb">
+      <div class="wb-src">${s}${note}</div>
+      <div class="wb-val" style="color:${valCol}">${vl}</div>
+      <div class="wb-wow" style="color:${wclr}">${wow>=0?'+':''}${wow.toFixed(0)}% WoW</div>
+      <div class="wb-sw"><canvas id="${cid}"></canvas></div>
+      <div class="wb-prev">prev ${vp}</div>
+    </div>`;
+  });
+  el.innerHTML=h;
+  requestAnimationFrame(()=>{
+    ['Paid','Organic','Direct','LLM','Referral','Other'].forEach(s=>{
+      const vp=prev[s]||0,vl=last[s]||0;
+      const wow=vp?((vl-vp)/vp*100):0;
+      const bot=s==='Direct'&&wow>50;
+      const col=bot?'#D97706':s==='LLM'?'#7C3AED':SC[s];
+      spark(`wb-${gridId}-${s}`,series[s],col);
+    });
+  });
+}
+
+// ── COUNTRY BOXES ─────────────────────────────────────────────────────────────
+function buildCountries(){
+  const g=document.getElementById('countryGrid');
+  Object.keys(CD).forEach(c=>{
+    const d=CD[c];const pace=Math.min(d.pace,100);
+    const wc=wowCls(d.wow);
+    g.insertAdjacentHTML('beforeend',`
+      <div class="cb ${cardCls(d)}">
+        ${d.isBot?'<div class="bot-tag">⚠ review</div>':''}
+        <div class="cb-head">
+          <div class="cb-name">${c}</div>
+          <div class="cb-wow ${wc}">${d.wow>0?'+':''}${d.wow}%</div>
+        </div>
+        <div class="cb-qct">${d.last}</div>
+        <div class="cb-inq">INQ ${d.inq[d.inq.length-1]}</div>
+        <div class="cb-sparks">
+          <div><div class="cb-sw"><canvas id="cq-${c}"></canvas></div><div class="cb-spark-lbl">QCT</div></div>
+          <div><div class="cb-sw"><canvas id="ci-${c}"></canvas></div><div class="cb-spark-lbl">INQ</div></div>
+        </div>
+        <div class="cb-bar-bg"><div class="cb-bar-fill" style="width:${pace}%;background:${paceCol(d.pace)}"></div></div>
+        <div class="cb-foot"><span><b>${d.mtd}</b> MTD</span><span style="color:${paceCol(d.pace)};font-weight:700">${d.pace.toFixed(0)}%</span></div>
+      </div>`);
+  });
+  requestAnimationFrame(()=>{
+    Object.keys(CD).forEach(c=>{
+      const d=CD[c];
+      const qcol=d.isBot?'#D97706':d.last>=d.avg13?'#2F9E44':'#E53E3E';
+      spark(`cq-${c}`,d.qct,qcol,{avg:d.avg13});
+      spark(`ci-${c}`,d.inq,'#1098AD');
+    });
+  });
+}
+
+// ── PACING ────────────────────────────────────────────────────────────────────
+function buildPacing(){
+  const el=document.getElementById('pacingRows');
+  let h='';
+  Object.keys(CD).forEach(c=>{
+    const d=CD[c];const col=paceCol(d.pace);const fill=Math.min(d.pace,100);
+    h+=`<div class="pac-row">
+      <div class="pac-lbl">${c}${d.isBot?' <span style="color:var(--bot);font-size:8px">⚠</span>':''}</div>
+      <div class="pac-track"><div class="pac-fill" style="width:${fill}%;background:${col}"></div></div>
+      <div class="pac-pct" style="color:${col}">${d.pace.toFixed(0)}%</div>
+    </div>`;
+  });
+  el.innerHTML=h;
+}
+
+// ── AVG CALLOUTS ──────────────────────────────────────────────────────────────
+function buildAvg(){
+  const rows=[
+    {c:'UK',     t:'pos',n:'2.2× its 13w avg of 92. QCTs doubled while traffic fell — conversion efficiency spiked.'},
+    {c:'Brazil', t:'neg',n:'24% below 13w avg of 188. 7 consecutive weeks declining.'},
+    {c:'US',     t:'amb',n:'19% below avg of 392. Paid budget pullback visible in the numbers.'},
+    {c:'Germany',t:'amb',n:'Anomaly flagged. If excluded, rest of market is in line with its ~65 clean baseline.'},
+    {c:'Australia',t:'neg',n:'14% below avg of 50. Furthest from June target at 46%.'},
+    {c:'Spain',  t:'neu',n:'Flat vs avg of 41. Stable, on trend, small WoW uptick.'},
+  ];
+  document.getElementById('avgCallouts').innerHTML=rows.map(r=>{
+    const d=CD[r.c];
+    return`<div class="co ${r.t}">
+      <div class="co-hd"><span class="co-nm">${r.c}</span><span class="co-mt">avg ${d.avg13} · last ${d.last}</span></div>
+      <div class="co-bd">${r.n}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── UK CHART ──────────────────────────────────────────────────────────────────
+function buildUkChart(){
+  if(pool.ukChart)pool.ukChart.destroy();
+  pool.ukChart=new Chart(document.getElementById('ukChart'),{
+    type:'bar',
+    data:{labels:UK_WEB.labels,datasets:[
+      {label:'Paid',   data:UK_WEB.Paid,   backgroundColor:'#3B5BDB99',stack:'a',yAxisID:'y'},
+      {label:'Direct', data:UK_WEB.Direct,  backgroundColor:'#F08C0099',stack:'a',yAxisID:'y'},
+      {label:'Organic',data:UK_WEB.Organic, backgroundColor:'#2F9E4499',stack:'a',yAxisID:'y'},
+      {label:'Other',  data:UK_WEB.Other,   backgroundColor:'#ADB5BD99',stack:'a',yAxisID:'y'},
+      {label:'QCTs',   data:UK_QCT,type:'line',borderColor:'#E53E3E',borderWidth:2.5,
+       pointBackgroundColor:'#E53E3E',pointRadius:4,fill:false,yAxisID:'y2',tension:0.3},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'right',labels:{font:{size:9},boxWidth:7,padding:5}},
+               tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y.toLocaleString()}`}}},
+      scales:{
+        x:{stacked:true,grid:{display:false},ticks:{font:{size:9}}},
+        y:{stacked:true,min:0,position:'left',grid:{color:'#F1F5F9'},ticks:{font:{size:8},callback:v=>v>=1000?`${(v/1e3).toFixed(0)}K`:v}},
+        y2:{min:0,max:280,position:'right',grid:{display:false},ticks:{font:{size:8},color:'#E53E3E'}}
+      }}
+  });
+}
+
+// ── SPEND CHART ──────────────────────────────────────────────────────────────
+function buildSpendChart(){
+  const avg=SPEND_V.reduce((a,b)=>a+b,0)/SPEND_V.length;
+  if(pool.spendChart)pool.spendChart.destroy();
+  pool.spendChart=new Chart(document.getElementById('spendChart'),{
+    type:'bar',
+    data:{labels:W,datasets:[
+      {label:'Spend',data:SPEND_V,backgroundColor:SPEND_V.map((v,i)=>i===SPEND_V.length-1?'#0072EC':'#93C5FD'),borderRadius:3},
+      {label:'13w avg',data:SPEND_V.map(()=>avg),type:'line',borderColor:'#94A3B8',borderDash:[3,3],borderWidth:1.5,pointRadius:0,fill:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.datasetIndex===0?` $${(c.parsed.y/1000).toFixed(0)}K`:` avg $${(c.parsed.y/1000).toFixed(0)}K`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:8},color:'#94A3B8',maxRotation:30,maxTicksLimit:7}},
+        y:{min:0,grid:{color:'#F1F5F9'},ticks:{font:{size:8},callback:v=>`$${(v/1000).toFixed(0)}K`}}
+      }}
+  });
+}
+
+// ── CHANNEL DONUT ─────────────────────────────────────────────────────────────
+function buildChannelChart(){
+  if(pool.channelChart)pool.channelChart.destroy();
+  pool.channelChart=new Chart(document.getElementById('channelChart'),{
+    type:'doughnut',
+    data:{labels:['Search','Social','Audio','Video'],
+          datasets:[{data:[39580,49181,5850,683],
+            backgroundColor:['#3B5BDB','#0072EC','#1098AD','#ADB5BD'],
+            borderWidth:2,borderColor:'#fff',hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'68%',
+      plugins:{legend:{position:'right',labels:{font:{size:9},boxWidth:8,padding:8}},
+               tooltip:{callbacks:{label:c=>` ${c.label}: $${(c.parsed/1000).toFixed(0)}K`}}}
+    }
+  });
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(btn,id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');document.getElementById(id).classList.add('active');
+  if(id==='sq')buildWow('wowQct','qct');
+  if(id==='si')buildWow('wowInq','inq');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  buildWow('wowQct','qct');
+  buildWow('wowInq','inq');
+  buildCountries();
+  buildPacing();
+  buildAvg();
+  buildUkChart();
+  buildSpendChart();
+  buildChannelChart();
+});
+</script>
+</body>
+</html>
